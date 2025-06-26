@@ -8,13 +8,14 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Task from '../components/Task';
 import { colors } from '../constants/colors';
 
 const inicialTasks = [
-  // { id: 2, completed: false, text: 'Fazer café', isShow: true },
-  // { id: 1, completed: false, text: 'Estudar React Native', isShow: true },
-  // { id: 3, completed: false, text: 'Academia', isShow: true },
+  { id: 2, completed: false, text: 'Fazer café' },
+  { id: 1, completed: false, text: 'Estudar React Native' },
+  { id: 3, completed: false, text: 'Academia' },
 ];
 
 export default function ViewBoxesWithColorAndText() {
@@ -33,44 +34,50 @@ export default function ViewBoxesWithColorAndText() {
   };
 
   return (
-    <View style={styles.mainContainer}>
-      <View style={styles.titleContainer}>
-        <Image
-          source={require('../assets/images/checked.png')}
-          style={styles.image}
+    <GestureHandlerRootView>
+      <View style={styles.mainContainer}>
+        <View style={styles.titleContainer}>
+          <Image
+            source={require('../assets/images/checked.png')}
+            style={styles.image}
+          />
+          <Text style={styles.title}>Lista de tarefa </Text>
+        </View>
+
+        <View style={styles.viewContainer}>
+          <TextInput
+            value={text}
+            onChangeText={setText}
+            placeholderTextColor="rgba(0,0,0,0.4)"
+            style={styles.input}
+            placeholder="Digite sua tarefa"></TextInput>
+          <Pressable
+            style={({ pressed }) => [
+              styles.button,
+              { backgroundColor: pressed ? '#000' : '#4a90e2' },
+            ]}
+            onPress={addTask}>
+            <Text style={styles.buttonText}>Add</Text>
+          </Pressable>
+        </View>
+
+        <FlatList
+          data={tasks}
+          Add
+          style={styles.FlatList}
+          commentMore
+          actions
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <Task
+              initialCompleted={item.completed}
+              text={item.text}
+              deleteTask={() => setTasks(tasks.filter((t) => t.id !== item.id))}
+            />
+          )}
         />
-        <Text style={styles.title}>Lista de tarefa </Text>
       </View>
-
-      <View style={styles.viewContainer}>
-        <TextInput
-          value={text}
-          onChangeText={setText}
-          placeholderTextColor="rgba(0,0,0,0.4)"
-          style={styles.input}
-          placeholder="Digite sua tarefa"></TextInput>
-        <Pressable
-          style={({ pressed }) => [
-            styles.button,
-            { backgroundColor: pressed ? '#000' : '#4a90e2' },
-          ]}
-          onPress={addTask}>
-          <Text style={styles.buttonText}>Add</Text>
-        </Pressable>
-      </View>
-
-      <FlatList
-        data={tasks}
-        Add
-        style={styles.FlatList}
-        commentMore
-        actions
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <Task initialCompleted={item.completed} text={item.text} />
-        )}
-      />
-    </View>
+    </GestureHandlerRootView>
   );
 }
 
